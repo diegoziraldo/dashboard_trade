@@ -20,7 +20,7 @@ const { stocks: usStocks, addTicker: addUsTicker, removeTicker: removeUsTicker }
   { symbol: 'GOOGL', name: 'Alphabet' },
 ])
 
-// --- Panel derecho: CEDEARs (precio teórico en vivo = USD Finnhub ÷ ratio × CCL) ---
+// --- Panel de CEDEARs (precio teórico en vivo = USD Finnhub ÷ ratio × CCL) ---
 const cclRate = computed(() => dolares.value?.contadoconliqui?.venta ?? 0)
 
 const { stocks: cedearStocks, addTicker: addCedear, removeTicker: removeCedear, updateRatio, recalcAll } =
@@ -41,68 +41,97 @@ watch(cclRate, () => recalcAll())
 </script>
 
 <template>
-  <div class="main-layout">
-    <StockPanel
-      title="Acciones USA (NYSE / NASDAQ)"
-      :stocks="usStocks"
-      placeholder="Ej: AAPL, TSLA"
-      @add="addUsTicker"
-      @remove="removeUsTicker"
-    />
-
-    <div class="center-column">
-      <SearchBar />
-      <FinanceTicker :dolares="dolares" :riesgo-pais="riesgoPais" :loading="dolarLoading" />
-      
-      <div class="cedears-container">
+  <div class="dashboard-wrapper">
+    <div class="main-layout">
+      <!-- Columna 1: Acciones USA (Izquierda) -->
+      <div class="column">
         <StockPanel
-          title="CEDEARs (BCBA)"
-          :stocks="cedearStocks"
-          placeholder="Ej: GGAL, YPF (sin .BA)"
-          :is-cedear="true"
-          @add="addCedear"
-          @remove="removeCedear"
-          @update-ratio="updateRatio"
+          title="Acciones USA (NYSE / NASDAQ)"
+          :stocks="usStocks"
+          placeholder="Ej: AAPL, TSLA"
+          @add="addUsTicker"
+          @remove="removeUsTicker"
         />
       </div>
-    </div>
 
-    <div class="right-column">
-      <div class="alerts-wrapper">
-        <AlertsPanel />
+      <!-- Columna 2: Centro (Buscador, Ticker macro y el Panel de Alertas abajo) -->
+      <div class="center-column">
+        <SearchBar />
+        <FinanceTicker :dolares="dolares" :riesgo-pais="riesgoPais" :loading="dolarLoading" />
+        
+        <div class="alerts-container">
+          <div class="alerts-wrapper">
+            <AlertsPanel />
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna 3: Derecha (CEDEARs arriba + espacio vacío abajo para tu próximo componente) -->
+      <div class="column right-column">
+        <div class="right-stack">
+          <div class="cedears-wrapper">
+            <StockPanel
+              title="CEDEARs (BCBA)"
+              :stocks="cedearStocks"
+              placeholder="Ej: GGAL, YPF (sin .BA)"
+              :is-cedear="true"
+              @add="addCedear"
+              @remove="removeCedear"
+              @update-ratio="updateRatio"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.main-layout{
-  display:grid;
-  grid-template-columns: 280px minmax(320px, 640px) 300px;
-  gap:20px;
-  width:100%;
-  max-width:1340px;
-  margin:0 auto;
-  align-items:start;
-  padding-top:5vh;
-  padding-left:16px;
-  padding-right:16px;
-  padding-bottom:30px;
+.dashboard-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: var(--bg-app, #0b0f19);
+  padding: 20px;
 }
-.center-column{
-  width:100%;
-  text-align:center;
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr) 360px;
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.column {
+  width: 100%;
+  min-width: 0;
+}
+
+.center-column {
+  width: 100%;
+  min-width: 0;
+  text-align: center;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.cedears-container {
+.alerts-container {
   width: 100%;
   text-align: left;
 }
 
 .right-column {
+  width: 100%;
+}
+
+.right-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
 }
 
@@ -112,11 +141,33 @@ watch(cclRate, () => recalcAll())
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
 }
 
-@media(max-width: 1200px){
-  .main-layout{
-    grid-template-columns: 280px 1fr;
+.cedears-wrapper {
+  width: 100%;
+}
+
+/* Espacio vacío provisional para cuando pases el siguiente código */
+.empty-slot {
+  width: 100%;
+  min-height: 150px;
+  border: 2px dashed #1f2937;
+  border-radius: 12px;
+  background-color: rgba(17, 24, 39, 0.4);
+  box-sizing: border-box;
+}
+
+@media(max-width: 1400px){
+  .main-layout {
+    grid-template-columns: 280px minmax(0, 1fr) 320px;
+  }
+}
+
+@media(max-width: 1100px){
+  .main-layout {
+    grid-template-columns: 1fr 1fr;
   }
   .right-column {
     grid-column: 1 / -1;
@@ -124,9 +175,9 @@ watch(cclRate, () => recalcAll())
 }
 
 @media(max-width: 768px){
-  .main-layout{
+  .main-layout {
     grid-template-columns: 1fr;
-    max-width: 640px;
+    padding: 0;
   }
 }
 </style>
