@@ -42,7 +42,6 @@ watch(cclRate, () => recalcAll())
 
 <template>
   <div class="main-layout">
-    <!-- Izquierda: Acciones USA -->
     <StockPanel
       title="Acciones USA (NYSE / NASDAQ)"
       :stocks="usStocks"
@@ -51,37 +50,38 @@ watch(cclRate, () => recalcAll())
       @remove="removeUsTicker"
     />
 
-    <!-- Centro: Buscador + resumen macro -->
     <div class="center-column">
       <SearchBar />
       <FinanceTicker :dolares="dolares" :riesgo-pais="riesgoPais" :loading="dolarLoading" />
+      
+      <div class="cedears-container">
+        <StockPanel
+          title="CEDEARs (BCBA)"
+          :stocks="cedearStocks"
+          placeholder="Ej: GGAL, YPF (sin .BA)"
+          :is-cedear="true"
+          @add="addCedear"
+          @remove="removeCedear"
+          @update-ratio="updateRatio"
+        />
+      </div>
     </div>
 
-    <!-- Derecha: CEDEARs -->
-    <StockPanel
-      title="CEDEARs (BCBA)"
-      :stocks="cedearStocks"
-      placeholder="Ej: GGAL, YPF (sin .BA)"
-      :is-cedear="true"
-      @add="addCedear"
-      @remove="removeCedear"
-      @update-ratio="updateRatio"
-    />
-  </div>
-
-  <!-- Alarmas de precio + calendario de balances -->
-  <div class="alerts-section">
-    <AlertsPanel />
+    <div class="right-column">
+      <div class="alerts-wrapper">
+        <AlertsPanel />
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .main-layout{
   display:grid;
-  grid-template-columns: 280px minmax(320px, 640px) 280px;
+  grid-template-columns: 280px minmax(320px, 640px) 300px;
   gap:20px;
   width:100%;
-  max-width:1280px;
+  max-width:1340px;
   margin:0 auto;
   align-items:start;
   padding-top:5vh;
@@ -89,15 +89,44 @@ watch(cclRate, () => recalcAll())
   padding-right:16px;
   padding-bottom:30px;
 }
-.center-column{width:100%;text-align:center;}
-
-.alerts-section{
-  max-width:900px;
-  margin:24px auto 0;
-  padding:0 16px;
+.center-column{
+  width:100%;
+  text-align:center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-@media(max-width: 960px){
-  .main-layout{grid-template-columns:1fr; max-width:640px;}
+.cedears-container {
+  width: 100%;
+  text-align: left;
+}
+
+.right-column {
+  width: 100%;
+}
+
+.alerts-wrapper {
+  background-color: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+@media(max-width: 1200px){
+  .main-layout{
+    grid-template-columns: 280px 1fr;
+  }
+  .right-column {
+    grid-column: 1 / -1;
+  }
+}
+
+@media(max-width: 768px){
+  .main-layout{
+    grid-template-columns: 1fr;
+    max-width: 640px;
+  }
 }
 </style>
