@@ -3,6 +3,7 @@ import { computed, watch } from 'vue'
 import SearchBar from './components/SearchBar.vue'
 import FinanceTicker from './components/FinanceTicker.vue'
 import StockPanel from './components/StockPanel.vue'
+import AlertsPanel from './components/AlertsPanel.vue'
 import { useDolar } from './composables/useDolar'
 import { useUsStocks, useCedears } from './composables/useStocks'
 
@@ -67,6 +68,11 @@ watch(cclRate, () => recalcAll())
       @update-ratio="updateRatio"
     />
   </div>
+
+  <!-- Alarmas de precio + calendario de balances -->
+  <div class="alerts-section">
+    <AlertsPanel />
+  </div>
 </template>
 
 <style scoped>
@@ -84,6 +90,12 @@ watch(cclRate, () => recalcAll())
   padding-bottom:30px;
 }
 .center-column{width:100%;text-align:center;}
+
+.alerts-section{
+  max-width:900px;
+  margin:24px auto 0;
+  padding:0 16px;
+}
 
 @media(max-width: 960px){
   .main-layout{grid-template-columns:1fr; max-width:640px;}

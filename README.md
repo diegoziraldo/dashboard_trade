@@ -42,6 +42,40 @@ npm run dev
 Los ratios de CEDEARs son editables desde la UI (campo "Ratio") por si BYMA
 los ajusta — no hay ninguna fuente gratuita confiable que los publique en vivo.
 
+## Alarmas de precio + calendario de balances
+
+Adaptado del script de Tampermonkey que ya tenían. Dos cambios importantes
+respecto al original (explicados en detalle en el chat):
+
+- **Precios en vivo vía Finnhub, no Yahoo Finance.** Tampermonkey usa `GM_xmlhttpRequest`,
+  que evita CORS. En una app web normal el navegador bloquea las llamadas directas a
+  Yahoo, así que las alarmas reutilizan `fetchQuote()` de `stockService.js` (Finnhub).
+- **Balances del MERVAL: no incluidos todavía.** Dependían de Yahoo (mismo problema de
+  CORS) y Finnhub no cubre BYMA. Se resuelve en la fase 2 con el backend haciendo de proxy.
+
+Archivos nuevos:
+```
+src/data/cedearTickers.js      # lista de tickers con CEDEAR (filtra el calendario)
+src/data/sp500Weight.js        # ranking para ordenar por relevancia
+src/services/earningsService.js
+src/services/alertsStorage.js  # localStorage, con el mismo "shape" que va a tener /api/alerts
+src/composables/useAlarmSound.js
+src/composables/useAlerts.js
+src/composables/useEarnings.js
+src/components/AlertRow.vue
+src/components/EarningsCalendar.vue
+src/components/AlertsPanel.vue
+```
+
+Funciona igual que el script: tipos IN/TARGET/STOP_LOSS, detección de cruce
+de precio (no solo "está por encima"), sonido en loop hasta que lo apagás,
+botón "E" por fila para consultar el próximo balance de ese ticker puntual,
+y el selector semanal que al elegir un ticker crea la alarma automáticamente.
+
+El sync remoto (Google Drive) no está — hoy persiste en `localStorage`. Va a
+SQLite en la fase 2 (ya dejé el `// TODO` exacto en `useAlerts.js` y
+`alertsStorage.js`).
+
 ## Próximos pasos (fase 2 — pendiente, a definir cuándo arrancamos)
 
 - Backend Node + Express con SQLite (better-sqlite3 o Sequelize).

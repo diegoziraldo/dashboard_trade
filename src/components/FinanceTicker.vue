@@ -22,7 +22,7 @@ function fmt(casa, dolares) {
       <div class="fin-val mono">{{ loading ? '$---' : fmt('bolsa', dolares) }}</div>
     </div>
     <div class="fin-card">
-      <div class="fin-title">Dólar Oficials</div>
+      <div class="fin-title">Dólar Oficial</div>
       <div class="fin-val mono">{{ loading ? '$---' : fmt('oficial', dolares) }}</div>
     </div>
     <div class="fin-card">

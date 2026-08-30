@@ -1,6 +1,7 @@
 :root{
   --bg:#0f1115;
   --panel:#14171f;
+  --panel-alt:#191d27;
   --border:#262b36;
   --text:#f1f3f4;
   --text-dim:#b0b4bc;
@@ -27,3 +28,10 @@ body{
 .down{color:var(--down);}
 
 a{color:inherit;}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px;
+}
