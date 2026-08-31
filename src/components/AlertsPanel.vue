@@ -55,12 +55,12 @@ function onSelectTicker(ticker) {
         :alert="alert"
         @update="updateAlert"
         @remove="removeAlert"
-        v-memo="[alert.id, alert.ticker, alert.price, alert.type, alert.condition]"
       />
     </div>
 
     <button class="btn-add" @click="addAlert">+ Agregar Alarma</button>
   </div>
+  
 </template>
 
 <style scoped>

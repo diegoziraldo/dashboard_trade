@@ -94,6 +94,30 @@ const priceLabel = computed(() => {
   background:var(--panel-alt, #14171f);border:1px solid var(--border);
   transition:background-color .3s ease;
 }
+.live-price {
+  display: inline-block;
+  width: 110px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.price-value {
+  display: inline-block;
+  width: 100%;
+}
+
+.price-fade-enter-active,
+.price-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.price-fade-enter-from {
+  opacity: 0;
+}
+
+.price-fade-leave-to {
+  opacity: 0;
+}
 .alert-row.triggered.type-in{ animation:blink-yellow .7s infinite alternate; }
 .alert-row.triggered.type-target{ animation:blink-green .7s infinite alternate; }
 .alert-row.triggered.type-sl{ animation:blink-sl .7s infinite alternate; }

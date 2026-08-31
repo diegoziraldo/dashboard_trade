@@ -4,6 +4,7 @@ import SearchBar from './components/SearchBar.vue'
 import FinanceTicker from './components/FinanceTicker.vue'
 import StockPanel from './components/StockPanel.vue'
 import AlertsPanel from './components/AlertsPanel.vue'
+import Checklist from './components/Checklist.vue'
 import { useDolar } from './composables/useDolar'
 import { useUsStocks, useCedears } from './composables/useStocks'
 
@@ -57,7 +58,9 @@ watch(cclRate, () => recalcAll())
       @remove="removeUsTicker"
     />
 
+    <!-- Columna central con dos paneles de alertas uno al lado del otro -->
     <div class="center-column">
+      <Checklist />
       <AlertsPanel />
     </div>
 
@@ -75,7 +78,7 @@ watch(cclRate, () => recalcAll())
 
 <style scoped>
 .topbar{
-  max-width:1280px;
+  max-width:1480px;
   margin:0 auto;
   padding:20px 16px 0;
   display:flex;
@@ -87,17 +90,31 @@ watch(cclRate, () => recalcAll())
 
 .main-layout{
   display:grid;
-  grid-template-columns: 260px minmax(380px, 720px) 260px;
+  grid-template-columns: 260px minmax(500px, 1fr) 260px;
   gap:20px;
   width:100%;
-  max-width:1280px;
+  max-width:1480px;
   margin:0 auto;
   align-items:start;
   padding:20px 16px 30px;
 }
-.center-column{width:100%;}
 
-@media(max-width: 1100px){
+/* Contenedor central adaptado para poner los dos paneles uno al lado del otro */
+.center-column{
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Hacemos que cada panel se reparta el espacio equitativamente */
+.center-column > * {
+  flex: 1;
+  min-width: 0;
+}
+
+@media(max-width: 1200px){
   .main-layout{grid-template-columns:1fr; max-width:640px;}
+  .center-column{flex-direction:column;} /* En pantallas chicas se apilan verticalmente por comodidad */
 }
 </style>
