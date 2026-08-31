@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 
+defineProps({ compact: { type: Boolean, default: false } })
+
 const query = ref('')
 const focused = ref(false)
 
@@ -16,7 +18,7 @@ function onKeypress(e) {
 </script>
 
 <template>
-  <div class="search-shell" :class="{ focus: focused }">
+  <div class="search-shell" :class="{ focus: focused, compact }">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
       <path d="M21 21l-4.35-4.35M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round"/>
     </svg>
@@ -30,7 +32,7 @@ function onKeypress(e) {
       @blur="focused = false"
     >
   </div>
-  <button class="search-btn" @click="doSearch">Búsqueda en Google</button>
+  <button v-if="!compact" class="search-btn" @click="doSearch">Búsqueda en Google</button>
 </template>
 
 <style scoped>
@@ -45,6 +47,8 @@ function onKeypress(e) {
 .search-shell:hover, .search-shell.focus{
   box-shadow:0 1px 10px rgba(0,0,0,.5);border-color:var(--blue);
 }
+.search-shell.compact{ height:38px;padding:0 14px;margin-bottom:0; }
+.search-shell.compact input{ font-size:13px; }
 .search-shell svg{flex-shrink:0;}
 .search-shell input{
   flex:1;border:none;outline:none;font-size:15px;color:var(--text);background:transparent;
