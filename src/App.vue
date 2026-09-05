@@ -5,6 +5,7 @@ import FinanceTicker from './components/FinanceTicker.vue'
 import StockPanel from './components/StockPanel.vue'
 import AlertsPanel from './components/AlertsPanel.vue'
 import Checklist from './components/Checklist.vue'
+import QuickLinks from './components/QuickLinks.vue'
 import { useDolar } from './composables/useDolar'
 import { useUsStocks, useCedears } from './composables/useStocks'
 
@@ -42,12 +43,17 @@ watch(cclRate, () => recalcAll())
 </script>
 
 <template>
+
+
   <!-- Barra superior: buscador + resumen macro, compacta -->
   <div class="topbar">
     <SearchBar compact />
     <FinanceTicker :dolares="dolares" :riesgo-pais="riesgoPais" :loading="dolarLoading" compact />
   </div>
-
+  <div>
+    <QuickLinks />
+    
+  </div>
   <!-- Layout principal: las alarmas van al centro, es lo primero que se ve -->
   <div class="main-layout">
     <StockPanel
@@ -96,7 +102,7 @@ watch(cclRate, () => recalcAll())
   max-width:1480px;
   margin:0 auto;
   align-items:start;
-  padding:20px 16px 30px;
+  padding:10px 16px 10px;
 }
 
 /* Contenedor central adaptado para poner los dos paneles uno al lado del otro */
