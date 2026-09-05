@@ -15,12 +15,12 @@ function fmt(casa, dolares) {
 <template>
   <div class="finance-ticker" :class="{ compact }">
     <div class="fin-card">
-      <div class="fin-title">Dólar Blue</div>
-      <div class="fin-val mono">{{ loading ? '$---' : fmt('blue', dolares) }}</div>
-    </div>
-    <div class="fin-card">
       <div class="fin-title">Dólar MEP</div>
       <div class="fin-val mono">{{ loading ? '$---' : fmt('bolsa', dolares) }}</div>
+    </div>
+    <div class="fin-card">
+      <div class="fin-title">Dólar CCL</div>
+      <div class="fin-val mono">{{ loading ? '$---' : fmt('contadoconliqui', dolares) }}</div>
     </div>
     <div class="fin-card">
       <div class="fin-title">Dólar Oficial</div>

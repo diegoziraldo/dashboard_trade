@@ -1,5 +1,8 @@
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { fetchQuote, getTheoreticalCedear } from '../services/stockService'
+
+// Cada cuánto se refresca automáticamente toda la watchlist
+const REFRESH_MS = 20_000 // 20 segundos
 
 /**
  * Watchlist de acciones de EE.UU. (NYSE/NASDAQ), con precio real de Finnhub.
@@ -9,6 +12,8 @@ export function useUsStocks(initialList) {
   const stocks = ref(
     initialList.map(s => ({ ...s, price: null, changePercent: null, loading: true, error: null }))
   )
+
+  let intervalId = null
 
   async function refreshOne(stock) {
     stock.loading = true
@@ -43,6 +48,19 @@ export function useUsStocks(initialList) {
     // TODO (fase 2): DELETE /api/watchlist/:id
   }
 
+  // Dispara el primer fetch apenas se monta el componente que usa este
+  // composable, y después repite cada REFRESH_MS. Sin esto, los tickers
+  // de la lista inicial se quedaban con price: null para siempre, porque
+  // nadie llamaba a refreshAll().
+  onMounted(() => {
+    refreshAll()
+    intervalId = setInterval(refreshAll, REFRESH_MS)
+  })
+
+  onUnmounted(() => {
+    if (intervalId) clearInterval(intervalId)
+  })
+
   return { stocks, refreshAll, addTicker, removeTicker }
 }
 
@@ -56,6 +74,8 @@ export function useCedears(initialList, cclRateRef) {
   const stocks = ref(
     initialList.map(s => ({ ...s, usdPrice: null, price: null, changePercent: null, loading: true, error: null }))
   )
+
+  let intervalId = null
 
   async function refreshOne(stock) {
     stock.loading = true
@@ -108,6 +128,17 @@ export function useCedears(initialList, cclRateRef) {
     stocks.value = stocks.value.filter(s => s.symbol !== symbol)
     // TODO (fase 2): DELETE /api/watchlist/:id
   }
+
+  // Igual que en useUsStocks: sin esto, la lista inicial de CEDEARs nunca
+  // pedía su primer precio y quedaba con price: null.
+  onMounted(() => {
+    refreshAll()
+    intervalId = setInterval(refreshAll, REFRESH_MS)
+  })
+
+  onUnmounted(() => {
+    if (intervalId) clearInterval(intervalId)
+  })
 
   return { stocks, refreshAll, addTicker, removeTicker, updateRatio, recalcAll }
 }
